@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Shinoi's Shop</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+width:350px;
+background:#fff;
+padding:25px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+.login-btn{
+background:#ff9900;
+color:white;
+}
+
+.signup-btn{
+background:#2563eb;
+color:white;
+}
+
+p{
+text-align:center;
+margin-top:15px;
+}
+
+a{
+text-decoration:none;
+color:#2563eb;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>🔐 Login</h2>
+
+<input id="email" type="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<p style="text-align:right; margin:10px 0;">
+    <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+</p>
+
+<button class="login-btn" onclick="login()">
+Login
+</button>
+
+<button class="signup-btn"
+onclick="window.location.href='signup.html'">
+Create Account
+</button>
+
+<button onclick="googleLogin()" style="background:#db4437;color:white;margin-top:10px;">
+    Sign in with Google
+</button>
+
+<p>
+Don't have an account?
+<a href="signup.html">Sign Up</a>
+</p>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+
+</body>
+</html>

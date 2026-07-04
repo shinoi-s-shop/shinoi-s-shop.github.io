@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Success</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:#fff;
+width:90%;
+max-width:450px;
+padding:30px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.2);
+text-align:center;
+}
+
+.icon{
+font-size:70px;
+color:green;
+}
+
+h1{
+margin:15px 0;
+color:#28a745;
+}
+
+p{
+margin:10px 0;
+font-size:17px;
+}
+
+.orderid{
+font-weight:bold;
+color:#1565c0;
+font-size:20px;
+}
+
+.total{
+font-size:22px;
+font-weight:bold;
+color:#ff6600;
+margin:15px 0;
+}
+
+.btn{
+display:block;
+width:100%;
+padding:14px;
+margin-top:12px;
+background:#ff9900;
+color:#fff;
+text-decoration:none;
+border-radius:8px;
+font-size:18px;
+}
+
+.btn:hover{
+background:#e68a00;
+}
+
+.home{
+background:#1565c0;
+}
+
+.home:hover{
+background:#0d47a1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="icon">✅</div>
+
+<h1>Order Placed Successfully!</h1>
+
+<p>Your Order ID</p>
+
+<p class="orderid" id="orderId"></p>
+
+<p>Total Amount</p>
+
+<p class="total" id="total"></p>
+
+<a href="my-orders.html" class="btn">
+📦 My Orders
+</a>
+
+<a href="index.html" class="btn home">
+🏠 Continue Shopping
+</a>
+
+</div>
+
+<script>
+
+let order = JSON.parse(localStorage.getItem("lastOrder"));
+
+if(order){
+
+document.getElementById("orderId").innerText = order.id;
+
+document.getElementById("total").innerText = "৳" + order.total;
+
+}else{
+
+document.getElementById("orderId").innerText = "Not Found";
+
+document.getElementById("total").innerText = "৳0";
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Details</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+.header{
+background:#131921;
+color:white;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:15px;
+}
+
+.product{
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.product img{
+width:100%;
+height:280px;
+object-fit:cover;
+}
+
+.content{
+padding:15px;
+}
+
+.price{
+font-size:28px;
+color:#1565c0;
+font-weight:bold;
+margin:10px 0;
+}
+
+.rating{
+color:orange;
+font-size:18px;
+}
+
+.desc{
+margin-top:15px;
+line-height:1.6;
+color:#444;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:8px;
+font-size:17px;
+cursor:pointer;
+}
+
+.cart{
+background:#ff9900;
+color:white;
+}
+
+.buy{
+background:#28a745;
+color:white;
+}
+
+.back{
+background:#444;
+color:white;
+}
+</style>
+
+</head>
+
+<body>
+<a href="index.html">🏠 Home</a>
+<a href="cart.html">🛒 Cart</a>
+<header class="navbar">
+    <body>
+
+<header class="navbar">
+    <div class="logo">🛒 Bangla Mart</div>
+
+    <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="product.html">📦 Products</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="profile.html">👤 Profile</a>
+        <a href="login.html">🔐 Login</a>
+    </nav>
+</header>
+
+</header>
+
+<div class="header">
+MyShop Pro
+</div>
+
+<div class="container">
+
+<div class="product">
+
+<img src="https://picsum.photos/500/400">
+
+<div class="content">
+
+<h2>Wireless Headphone</h2>
+
+<div class="rating">
+⭐⭐⭐⭐☆ (4.5)
+</div>
+
+<div class="price">
+$45
+</div>
+
+<div class="desc">
+Premium quality wireless headphone with deep bass,
+Bluetooth 5.3, 20-hour battery backup and noise reduction.
+</div>
+
+<button class="cart" onclick="addCart()">
+🛒 Add to Cart
+</button>
+
+<button class="buy" onclick="buyNow()">
+⚡ Buy Now
+</button>
+
+<button class="back" onclick="history.back()">
+⬅ Back
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function addCart(){
+
+alert("Product added to cart.");
+
+}
+
+function buyNow(){
+
+alert("Proceeding to checkout (Demo).");
+
+}
+
+</script>
+
+</body>
+</html>

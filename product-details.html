@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Details</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+header{
+background:#131921;
+color:#fff;
+padding:15px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.container{
+max-width:1100px;
+margin:20px auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.15);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+.product-image img{
+width:100%;
+border-radius:10px;
+}
+
+.product-info h1{
+margin-bottom:10px;
+}
+
+.price{
+font-size:30px;
+color:#e53935;
+font-weight:bold;
+margin:15px 0;
+}
+
+.category{
+display:inline-block;
+background:#1565c0;
+color:#fff;
+padding:6px 12px;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+.description{
+line-height:1.7;
+margin-bottom:20px;
+color:#555;
+}
+
+.btn{
+padding:14px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+margin-right:10px;
+margin-top:10px;
+}
+
+.cart{
+background:#ff9900;
+color:white;
+}
+
+.buy{
+background:#2e7d32;
+color:white;
+}
+
+.review-box{
+
+max-width:1100px;
+margin:20px auto;
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.15);
+
+}
+
+.review-box input,
+.review-box textarea,
+.review-box select{
+
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:10px;
+border:1px solid #ccc;
+border-radius:8px;
+
+}
+
+.review-card{
+
+border:1px solid #ddd;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+
+}
+
+.review-card img{
+
+width:120px;
+margin-top:10px;
+border-radius:8px;
+
+}
+
+@media(max-width:768px){
+
+.container{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+🛍 Product Details
+
+</header>
+
+<div class="container">
+
+<div class="product-image">
+
+<img id="productImage">
+
+</div>
+
+<div class="product-info">
+
+<h1 id="productName"></h1>
+
+<div class="price" id="productPrice"></div>
+
+<div class="category" id="productCategory"></div>
+
+<p class="description" id="productDescription"></p>
+
+<button class="btn cart" onclick="addToCart()">
+
+🛒 Add To Cart
+
+</button>
+
+<button class="btn buy" onclick="buyNow()">
+
+⚡ Buy Now
+
+</button>
+
+</div>
+
+</div>
+
+<div class="review-box">
+
+<h2>⭐ Customer Reviews</h2>
+
+<p>
+
+Average Rating:
+<b id="avgRating">0.0</b>
+
+<span id="avgStars">☆☆☆☆☆</span>
+
+(<span id="totalReviews">0</span> Reviews)
+
+</p>
+
+<input
+type="text"
+id="reviewName"
+placeholder="Your Name">
+
+<select id="rating">
+
+<option value="5">⭐⭐⭐⭐⭐</option>
+<option value="4">⭐⭐⭐⭐</option>
+<option value="3">⭐⭐⭐</option>
+<option value="2">⭐⭐</option>
+<option value="1">⭐</option>
+
+</select>
+
+<textarea
+id="reviewText"
+placeholder="Write your review..."></textarea>
+
+<input
+type="file"
+id="reviewImage"
+accept="image/*">
+
+<button class="btn buy" onclick="addReview()">
+
+Submit Review
+
+</button>
+
+<hr style="margin:20px 0;">
+
+<div id="reviewList"></div>
+
+</div>
+<script>
+
+// =====================
+// Load Product
+// =====================
+
+let product = JSON.parse(localStorage.getItem("selectedProduct"));
+
+if(!product){
+    alert("Product Not Found!");
+    window.location.href = "index.html";
+}
+
+document.getElementById("productImage").src = product.image;
+document.getElementById("productName").innerText = product.name;
+document.getElementById("productPrice").innerText = "৳" + product.price;
+document.getElementById("productCategory").innerText = product.category || "General";
+document.getElementById("productDescription").innerText = product.description || "High Quality Product.";
+
+
+// =====================
+// Add To Cart
+// =====================
+
+function addToCart(){
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    let exists = cart.find(item => item.name === product.name);
+
+    if(exists){
+
+        exists.quantity = (exists.quantity || 1) + 1;
+
+    }else{
+
+        let newProduct = {
+            name: product.name,
+            image: product.image,
+            price: Number(product.price),
+            category: product.category,
+            description: product.description,
+            quantity: 1
+        };
+
+        cart.push(newProduct);
+
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    alert("✅ Product Added To Cart");
+
+}
+
+
+// =====================
+// Buy Now
+// =====================
+
+function buyNow(){
+
+    addToCart();
+
+    window.location.href = "checkout.html";
+
+}
+
+
+// =====================
+// Review System
+// =====================
+
+let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+
+function loadReviews(){
+
+    let reviewList = document.getElementById("reviewList");
+    reviewList.innerHTML = "";
+
+    let productReviews = reviews.filter(r => r.name === product.name);
+
+    document.getElementById("totalReviews").innerText = productReviews.length;
+
+    if(productReviews.length == 0){
+
+        document.getElementById("avgRating").innerText = "0.0";
+        document.getElementById("avgStars").innerText = "☆☆☆☆☆";
+
+        reviewList.innerHTML = "<p>No Reviews Yet.</p>";
+
+        return;
+
+    }
+
+    let total = 0;
+
+    productReviews.forEach((r,index)=>{
+
+        total += Number(r.rating);
+
+        reviewList.innerHTML += `
+
+<div class="review-card">
+
+<h3>${r.user}</h3>
+
+<p>${"⭐".repeat(r.rating)}</p>
+
+<p>${r.review}</p>
+
+${r.image ? `<img src="${r.image}" style="max-width:150px;">` : ""}
+
+<br><br>
+
+<button class="btn cart" onclick="deleteReview(${index})">
+Delete
+</button>
+
+</div>
+
+`;
+
+    });
+
+    let avg = (total / productReviews.length).toFixed(1);
+
+    document.getElementById("avgRating").innerText = avg;
+    document.getElementById("avgStars").innerText =
+        "⭐".repeat(Math.round(avg));
+
+}
+
+function addReview(){
+
+    let user = document.getElementById("reviewName").value.trim();
+    let rating = Number(document.getElementById("rating").value);
+    let review = document.getElementById("reviewText").value.trim();
+
+    if(user=="" || review==""){
+
+        alert("Please fill all fields!");
+
+        return;
+
+    }
+
+    let file = document.getElementById("reviewImage").files[0];
+
+    if(file){
+
+        let reader = new FileReader();
+
+        reader.onload=function(){
+
+            saveReview(reader.result);
+
+        }
+
+        reader.readAsDataURL(file);
+
+    }else{
+
+        saveReview("");
+
+    }
+
+}
+
+function saveReview(image){
+
+    reviews.push({
+
+        name: product.name,
+        user: document.getElementById("reviewName").value,
+        rating: Number(document.getElementById("rating").value),
+        review: document.getElementById("reviewText").value,
+        image: image
+
+    });
+
+    localStorage.setItem("reviews", JSON.stringify(reviews));
+
+    document.getElementById("reviewName").value="";
+    document.getElementById("reviewText").value="";
+    document.getElementById("reviewImage").value="";
+    document.getElementById("rating").value="5";
+
+    loadReviews();
+
+}
+
+function deleteReview(index){
+
+    let productReviews = reviews.filter(r => r.name === product.name);
+
+    let target = productReviews[index];
+
+    let realIndex = reviews.findIndex(r =>
+        r.name === target.name &&
+        r.user === target.user &&
+        r.review === target.review &&
+        r.rating === target.rating
+    );
+
+    if(realIndex > -1){
+
+        reviews.splice(realIndex,1);
+
+        localStorage.setItem("reviews", JSON.stringify(reviews));
+
+        loadReviews();
+
+    }
+
+}
+
+
+// প্রথমবার পেজ লোড হলে Review দেখাবে
+loadReviews();
+
+</script>
+
+</body>
+</html>

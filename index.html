@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Shinoi’s Shop</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f3f3f3;
+}
+
+header{
+background:#131921;
+padding:12px;
+color:white;
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+}
+
+.search{
+margin-top:10px;
+display:flex;
+}
+
+.search input{
+flex:1;
+padding:10px;
+border:none;
+outline:none;
+border-radius:6px 0 0 6px;
+}
+
+.search button{
+padding:10px 15px;
+border:none;
+background:#febd69;
+cursor:pointer;
+border-radius:0 6px 6px 0;
+}
+
+.banner{
+margin:12px;
+height:180px;
+background:linear-gradient(45deg,#1565c0,#00bcd4);
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:28px;
+font-weight:bold;
+color:white;
+border-radius:12px;
+}
+
+.categories{
+display:flex;
+gap:10px;
+overflow-x:auto;
+padding:10px;
+}
+
+.categories::-webkit-scrollbar{
+display:none;
+}
+
+.cat{
+background:white;
+padding:10px 18px;
+border-radius:25px;
+box-shadow:0 2px 6px rgba(0,0,0,.15);
+cursor:pointer;
+white-space:nowrap;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:15px;
+padding:15px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+transition:.3s;
+cursor:pointer;
+}
+
+.card:hover{
+transform:translateY(-4px);
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.card h3{
+padding:10px;
+font-size:17px;
+}
+
+.price{
+padding:0 10px;
+font-size:20px;
+font-weight:bold;
+color:#1565c0;
+}
+
+.btn{
+margin:10px;
+padding:10px;
+background:#ff9900;
+color:white;
+text-align:center;
+border-radius:8px;
+cursor:pointer;
+border:none;
+width:calc(100% - 20px);
+font-size:15px;
+}
+
+.btn:hover{
+background:#fb8c00;
+}
+
+.bottom{
+position:fixed;
+left:0;
+bottom:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 10px rgba(0,0,0,.15);
+}
+
+.bottom a{
+text-decoration:none;
+color:#222;
+text-align:center;
+font-size:14px;
+}
+
+footer{
+height:80px;
+}
+
+</style>
+
+</head>
+
+<body>
+  
+ <header>
+
+<div class="logo">
+🛍 Shinoi’s Shop
+</div>
+
+<div class="search">
+
+<input
+type="text"
+id="search"
+placeholder="Search Products..."
+onkeyup="searchProduct()">
+
+<button onclick="searchProduct()">🔍</button>
+
+</div>
+
+</header>
+
+<div class="banner">
+🔥 BIG SALE 50% OFF 🔥
+</div>
+
+<div class="categories">
+
+<div class="cat">📱 Mobile</div>
+<div class="cat">💻 Laptop</div>
+<div class="cat">⌚ Watch</div>
+<div class="cat">👟 Shoes</div>
+<div class="cat">🎧 Headphone</div>
+<div class="cat">👜 Bag</div>
+
+</div>
+
+<div class="products" id="products">
+
+<div class="card">
+
+<img src="https://picsum.photos/300?1">
+
+<h3>Running Shoes</h3>
+
+<div class="price">৳1500</div>
+
+<button class="btn"
+onclick="event.stopPropagation();addToCart(1,'Running Shoes',1500,'https://picsum.photos/300?1')">
+🛒 Add to Cart
+</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300?2">
+
+<h3>Sports Shoes</h3>
+
+<div class="price">৳1800</div>
+
+<button class="btn"
+onclick="event.stopPropagation();addToCart(2,'Sports Shoes',1800,'https://picsum.photos/300?2')">
+🛒 Add to Cart
+</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300?3">
+
+<h3>Wireless Headphone</h3>
+
+<div class="price">৳4500</div>
+
+<button class="btn"
+onclick="event.stopPropagation();addToCart(3,'Wireless Headphone',4500,'https://picsum.photos/300?3')">
+🛒 Add to Cart
+</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300?4">
+
+<h3>Travel Backpack</h3>
+
+<div class="price">৳3900</div>
+
+<button class="btn"
+onclick="event.stopPropagation();addToCart(4,'Travel Backpack',3900,'https://picsum.photos/300?4')">
+🛒 Add to Cart
+</button>
+
+</div>
+
+</div>
+
+<footer></footer>
+
+<div class="bottom">
+
+<a href="index.html">🏠<br>Home</a>
+
+<a href="wishlist.html">❤️<br>Wishlist</a>
+
+<a href="cart.html">🛒<br>Cart</a>
+
+<a href="profile.html">👤<br>Profile</a>
+
+</div>
+
+<script>
+
+function searchProduct(){
+
+    let input = document.getElementById("search").value.toLowerCase();
+
+    let cards = document.querySelectorAll(".card");
+
+    cards.forEach(card=>{
+
+        let title = card.querySelector("h3").innerText.toLowerCase();
+
+        card.style.display = title.includes(input) ? "block" : "none";
+
+    });
+
+}
+
+
+// Product Details
+let cards = document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+
+    card.addEventListener("click",function(e){
+
+        if(e.target.classList.contains("btn")) return;
+
+        let product={
+
+            id: Number(card.querySelector(".btn").getAttribute("onclick").match(/\d+/)[0]),
+
+            image:card.querySelector("img").src,
+
+            name:card.querySelector("h3").innerText,
+
+            price:Number(card.querySelector(".price").innerText.replace("৳","")),
+
+            category:"General",
+
+            description:"High Quality Product."
+
+        };
+
+        localStorage.setItem("selectedProduct",JSON.stringify(product));
+
+        window.location.href="product-details.html";
+
+    });
+
+});
+
+</script>
+
+<script src="cart.js"></script>
+<script>
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let productBox = document.getElementById("products");
+
+if(productBox){
+
+productBox.innerHTML = "";
+
+    products.forEach(product=>{
+
+        productBox.innerHTML += `
+
+        <div class="card">
+
+            <img src="${product.image}" alt="${product.name}">
+
+            <h3>${product.name}</h3>
+
+            <div class="price">৳${product.price}</div>
+
+            <button class="btn"
+            onclick="addToCart('${product.name}',${product.price})">
+            Add to Cart
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+function openProduct(id){
+
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+
+    let product = products.find(p => p.id == id);
+
+    if(product){
+        localStorage.setItem("selectedProduct", JSON.stringify(product));
+        window.location.href = "product-details.html";
+    }
+
+}
+</script>
+
+<script src="cart.js"></script>
+</body>
+</html>

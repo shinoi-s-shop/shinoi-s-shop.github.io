@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+margin:0;
+}
+
+header{
+background:#131921;
+color:white;
+text-align:center;
+padding:15px;
+font-size:24px;
+}
+
+.container{
+padding:15px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+h3{
+color:#1565c0;
+margin-top:0;
+}
+
+.status{
+color:orange;
+font-weight:bold;
+}
+
+.invoice-btn{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#1565c0;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.invoice-btn:hover{
+background:#0d47a1;
+}
+
+.home{
+display:block;
+text-align:center;
+margin:20px;
+text-decoration:none;
+font-weight:bold;
+color:#1565c0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>📦 My Orders</header>
+
+<div class="container" id="orderList"></div>
+
+<a class="home" href="index.html">⬅ Back to Home</a>
+
+<script>
+
+function viewInvoice(index){
+
+let orders=JSON.parse(localStorage.getItem("orders"))||[];
+
+localStorage.setItem("lastOrder",JSON.stringify(orders[index]));
+
+window.location.href="invoice.html";
+
+}
+
+let orders=JSON.parse(localStorage.getItem("orders"))||[];
+
+let customer=JSON.parse(localStorage.getItem("customer"))||{};
+
+let list=document.getElementById("orderList");
+
+if(orders.length===0){
+
+list.innerHTML="<h2 style='text-align:center'>No Orders Found!</h2>";
+
+}else{
+
+orders.forEach((item,index)=>{
+
+list.innerHTML+=`
+
+<div class="card">
+
+<h3>Order #BM${1000+index}</h3>
+
+<p><b>Product:</b> ${item.name || "Product"}</p>
+
+<p><b>Price:</b> ৳${item.price || 0}</p>
+
+<p><b>Name:</b> ${customer.name || ""}</p>
+
+<p><b>Phone:</b> ${customer.phone || ""}</p>
+
+<p><b>Address:</b> ${customer.address || ""}</p>
+
+<p><b>Payment:</b> ${customer.payment || ""}</p>
+
+<p>
+<b>Status:</b>
+<span class="status">
+${item.status || "Pending"}
+</span>
+</p>
+
+<p><b>Date:</b> ${item.date || new Date().toLocaleString()}</p>
+
+<button class="invoice-btn" onclick="viewInvoice(${index})">
+🧾 View Invoice
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

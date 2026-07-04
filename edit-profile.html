@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+.container{
+max-width:420px;
+margin:30px auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+img{
+width:120px;
+height:120px;
+border-radius:50%;
+display:block;
+margin:auto;
+object-fit:cover;
+border:3px solid #1565c0;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:13px;
+margin-top:20px;
+background:#1565c0;
+color:#fff;
+border:none;
+border-radius:8px;
+font-size:17px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Edit Profile</h2>
+
+<img id="photo" src="https://via.placeholder.com/120">
+
+<input type="file" id="image" accept="image/*">
+
+<input
+type="text"
+id="name"
+placeholder="Full Name">
+
+<button onclick="saveProfile()">
+
+Save Profile
+
+</button>
+
+</div>
+
+<script type="module">
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+onAuthStateChanged(auth, (user) => {
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("name").value =
+    user.displayName || "";
+
+  if (user.photoURL) {
+    document.getElementById("photo").src =
+      user.photoURL;
+  }
+
+});
+
+window.saveProfile = async function () {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Please login first.");
+    return;
+  }
+
+  try {
+
+    let photoURL = user.photoURL;
+
+    const file = document.getElementById("image").files[0];
+
+    if (file) {
+
+      const storageRef = ref(storage, "profiles/" + user.uid);
+
+      await uploadBytes(storageRef, file);
+
+      photoURL = await getDownloadURL(storageRef);
+
+    }
+
+    await updateProfile(user, {
+      displayName: document.getElementById("name").value,
+      photoURL: photoURL
+    });
+
+    await user.reload();
+
+    alert("✅ Profile Updated Successfully!");
+
+    window.location.href = "profile.html";
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>

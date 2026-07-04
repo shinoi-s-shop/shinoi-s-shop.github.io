@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Orders</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+header{
+background:#131921;
+color:white;
+padding:15px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.container{
+max-width:1000px;
+margin:20px auto;
+padding:15px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+.card p{
+margin:6px 0;
+}
+
+select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+}
+
+button{
+margin-top:10px;
+width:100%;
+padding:12px;
+background:#ff9900;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.back{
+display:block;
+width:220px;
+margin:20px auto;
+text-align:center;
+padding:12px;
+background:#1565c0;
+color:white;
+text-decoration:none;
+border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Manage Orders</header>
+
+<div class="container" id="orderList"></div>
+
+<a href="admin.html" class="back">⬅ Back to Dashboard</a>
+
+<script>
+
+function loadOrders(){
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    let list = document.getElementById("orderList");
+
+    list.innerHTML = "";
+
+    if(orders.length === 0){
+        list.innerHTML = "<h2>No Orders Found!</h2>";
+        return;
+    }
+
+    orders.reverse().forEach((order,index)=>{
+
+        let customer = order.customer || {};
+
+        let productsHtml = "";
+
+        if(order.products){
+            order.products.forEach(item=>{
+                productsHtml += `
+                    <p>📦 ${item.name} × ${item.quantity || 1}</p>
+                `;
+            });
+        }
+
+        list.innerHTML += `
+
+        <div class="card">
+
+            <h3>Order ID: ${order.id}</h3>
+
+            <p><b>Customer Name:</b> ${customer.name || "N/A"}</p>
+
+            <p><b>Phone:</b> ${customer.phone || "N/A"}</p>
+
+            <p><b>Address:</b> ${customer.address || "N/A"}</p>
+
+            <p><b>Payment:</b> ${order.payment}</p>
+
+            <p><b>Total:</b> ৳${order.total}</p>
+
+            <p><b>Status:</b>
+                <span id="currentStatus${index}">
+                    ${order.status}
+                </span>
+            </p>
+
+            <hr>
+
+            <h4>Products</h4>
+
+            ${productsHtml}
+
+            <select id="status${index}">
+                <option value="Pending" ${order.status=="Pending"?"selected":""}>Pending</option>
+                <option value="Processing" ${order.status=="Processing"?"selected":""}>Processing</option>
+                <option value="Shipped" ${order.status=="Shipped"?"selected":""}>Shipped</option>
+                <option value="Delivered" ${order.status=="Delivered"?"selected":""}>Delivered</option>
+            </select>
+
+            <button onclick="updateStatus(${orders.length-1-index})">
+                Update Status
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+function updateStatus(realIndex){
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    let reverseIndex = orders.length - 1 - realIndex;
+
+    let status = document.getElementById("status"+realIndex).value;
+
+    orders[reverseIndex].status = status;
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    if(localStorage.getItem("lastOrder")){
+        localStorage.setItem("lastOrder", JSON.stringify(orders[reverseIndex]));
+    }
+
+    alert("✅ Status Updated Successfully!");
+
+    loadOrders();
+
+}
+
+loadOrders();
+
+</script>

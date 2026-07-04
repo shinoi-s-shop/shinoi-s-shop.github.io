@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Manage Orders</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+select{
+padding:8px;
+margin-top:10px;
+}
+
+button{
+padding:10px 15px;
+background:#1565c0;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>📦 Manage Orders</h2>
+
+<div id="orderList"></div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let list = document.getElementById("orderList");
+
+function loadOrders(){
+
+list.innerHTML="";
+
+if(orders.length==0){
+list.innerHTML="<h3>No Orders Found</h3>";
+return;
+}
+
+orders.forEach((order,index)=>{
+
+list.innerHTML += `
+
+<div class="card">
+
+<h3>${order.id}</h3>
+
+<p><b>Customer:</b> ${order.customer.name}</p>
+
+<p><b>Total:</b> ৳${order.total}</p>
+
+<p><b>Status:</b> ${order.status}</p>
+
+<select onchange="changeStatus(${index},this.value)">
+
+<option ${order.status=="Pending"?"selected":""}>Pending</option>
+
+<option ${order.status=="Processing"?"selected":""}>Processing</option>
+
+<option ${order.status=="Shipped"?"selected":""}>Shipped</option>
+
+<option ${order.status=="Delivered"?"selected":""}>Delivered</option>
+
+<option ${order.status=="Cancelled"?"selected":""}>Cancelled</option>
+
+</select>
+
+</div>
+
+`;
+
+});
+
+}
+
+function changeStatus(index,status){
+
+orders[index].status=status;
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+alert("Status Updated");
+
+loadOrders();
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
