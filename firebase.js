@@ -1,3 +1,11 @@
+import {
+  getDatabase,
+  ref,
+  push,
+  get,
+  child
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
 import {
@@ -28,6 +36,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 const auth = getAuth(app);
 
 // =================== SIGN UP ===================
