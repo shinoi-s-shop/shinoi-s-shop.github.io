@@ -340,55 +340,66 @@ cards.forEach(card=>{
 </script>
 
 <script src="cart.js"></script>
-<script>
 
-let products = JSON.parse(localStorage.getItem("products")) || [];
+<script type="module">
 
-let productBox = document.getElementById("products");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  get
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-if(productBox){
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  databaseURL: "https://shinoi-s-shop-default-rtdb.firebaseio.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
+};
 
-productBox.innerHTML = "";
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    products.forEach(product=>{
+const productBox = document.getElementById("products");
 
-        productBox.innerHTML += `
+async function loadProducts() {
 
-        <div class="card">
+  productBox.innerHTML = "";
 
-            <img src="${product.image}" alt="${product.name}">
+  const snapshot = await get(ref(db, "products"));
 
-            <h3>${product.name}</h3>
+  if (!snapshot.exists()) {
+    productBox.innerHTML = "<h3>No Products Found</h3>";
+    return;
+  }
 
-            <div class="price">৳${product.price}</div>
+  snapshot.forEach((child) => {
 
-            <button class="btn"
-            onclick="addToCart('${product.name}',${product.price})">
-            Add to Cart
-            </button>
+    const product = child.val();
 
-        </div>
+    productBox.innerHTML += `
+      <div class="card">
+        <img src="${product.image}">
+        <h3>${product.name}</h3>
+        <div class="price">৳${product.price}</div>
 
-        `;
+        <button class="btn"
+        onclick="addToCart('${product.name}',${product.price},'${product.image}')">
+        🛒 Add to Cart
+        </button>
+      </div>
+    `;
 
-    });
+  });
 
 }
 
-function openProduct(id){
+loadProducts();
 
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-
-    let product = products.find(p => p.id == id);
-
-    if(product){
-        localStorage.setItem("selectedProduct", JSON.stringify(product));
-        window.location.href = "product-details.html";
-    }
-
-}
 </script>
-
 <script src="cart.js"></script>
 </body>
 </html>
