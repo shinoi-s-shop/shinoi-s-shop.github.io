@@ -381,7 +381,7 @@ async function loadProducts() {
     const product = child.val();
 
     productBox.innerHTML += `
-      <div class="card">
+      <div class="card" onclick='localStorage.setItem("selectedProduct", JSON.stringify(${JSON.stringify(product)})); window.location.href="product-details.html";'>
         <img src="${product.image}">
         <h3>${product.name}</h3>
         <div class="price">৳${product.price}</div>
@@ -400,6 +400,6 @@ async function loadProducts() {
 loadProducts();
 
 </script>
-<script src="cart.js"></script>
+  
 </body>
 </html>
