@@ -118,54 +118,79 @@ font-weight:bold;
 </a>
 
 </div>
+<script type="module">
 
-<script>
- 
-function saveProduct(){
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
-    let name = document.getElementById("name").value.trim();
-    let price = document.getElementById("price").value.trim();
-    let file = document.getElementById("image").files[0];
-    let category = document.getElementById("category").value;
-    let description = document.getElementById("description").value.trim();
+import {
+  getDatabase,
+  ref,
+  push
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-    if(name==="" || price==="" || image==="" || category===""){
-
-        alert("Please fill all required fields!");
-        return;
-
-    }
-
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-
-    let reader = new FileReader();
-
-reader.onload = function(e){
-
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-
-    let product = {
-        id: Date.now(),
-        name: name,
-        price: Number(price),
-        image: e.target.result,
-        category: category,
-        description: description
-    };
-
-    products.push(product);
-
-    localStorage.setItem("products", JSON.stringify(products));
-
-    alert("✅ Product Added Successfully!");
-
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  databaseURL: "https://shinoi-s-shop-default-rtdb.firebaseio.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
 };
 
-reader.readAsDataURL(file);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    products.push(product);
+// Cloudinary
+const CLOUD_NAME = "ytxodtlc";
+const UPLOAD_PRESET = "shinoi-s-shop";
 
-    localStorage.setItem("products", JSON.stringify(products));
+ window.saveProduct = async function () {
+
+  const name = document.getElementById("name").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const file = document.getElementById("image").files[0];
+  const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value.trim();
+
+  if (!name || !price || !file || !category) {
+    alert("Please fill all required fields!");
+    return;
+  }
+
+  try {
+
+    // Upload image to Cloudinary
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    const data = await response.json();
+
+    if (!data.secure_url) {
+      alert("Image upload failed!");
+      return;
+    }
+
+    const product = {
+      id: Date.now(),
+      name: name,
+      price: Number(price),
+      image: data.secure_url,
+      category: category,
+      description: description
+    };
+
+    await push(ref(db, "products"), product);
 
     alert("✅ Product Added Successfully!");
 
@@ -175,9 +200,8 @@ reader.readAsDataURL(file);
     document.getElementById("category").value = "";
     document.getElementById("description").value = "";
 
-}
+  } catch (error) {
+    alert(error.message);
+  }
 
-</script>
-
-</body>
-</html>
+     }
