@@ -29,11 +29,15 @@ window.placeOrder = async function () {
   }
 
   const order = {
-    customer,
-    products: cart,
-    date: new Date().toLocaleString(),
-    status: "Pending"
-  };
+  userUid: localStorage.getItem("userUid"),
+  userEmail: localStorage.getItem("userEmail"),
+  userName: localStorage.getItem("userName"),
+
+  customer,
+  products: cart,
+  date: new Date().toLocaleString(),
+  status: "Pending"
+};
 
   try {
 
