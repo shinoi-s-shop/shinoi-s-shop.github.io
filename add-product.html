@@ -200,13 +200,16 @@ const UPLOAD_PRESET = "shinoi-s-shop";
     document.getElementById("category").value = "";
     document.getElementById("description").value = "";
 
+    location.reload();
+
   } catch (error) {
-    alert(error.message);
+    console.error(error);
+    alert("Error: " + error.message);
   }
 
-     }
+};
 
-  </script>
+</script>
 
 </body>
 </html>
