@@ -85,93 +85,31 @@ cursor:pointer;
 
 <body>
 
-<header>⚙️ Admin Panel</header>
+<header>
+<h1>🛠 Admin Panel</h1>
+</header>
 
 <div class="container">
 
-<div class="card">
+<h2>Add Product</h2>
 
-<a href="add-product.html" class="btn">➕ Add Product</a>
+<a href="add-product.html">
+<button>➕ Add New Product</button>
+</a>
 
-<a href="orders-admin.html" class="btn">📦 Manage Orders</a>
-
-<button onclick="logout()">Logout</button>
-
-<script>
-function logout(){
-localStorage.removeItem("adminLogin");
-window.location.href="admin-login.html";
-}
-</script>
-
-</div>
-
-<div class="card">
+<hr style="margin:20px 0;">
 
 <h2>All Products</h2>
 
-<div id="productList"></div>
+<div id="productList">
+
+<p>Loading products...</p>
 
 </div>
 
 </div>
 
-<script>
 
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-let productList = document.getElementById("productList");
-
-function loadProducts(){
-
-    productList.innerHTML = "";
-
-    if(products.length === 0){
-
-        productList.innerHTML = "<p>No products found.</p>";
-        return;
-
-    }
-
-    products.forEach((product,index)=>{
-
-        productList.innerHTML += `
-
-        <div class="product">
-
-            <img src="${product.image}" alt="${product.name}">
-
-            <div>
-                <h3>${product.name}</h3>
-                <p>৳${product.price}</p>
-                <small>${product.category}</small>
-            </div>
-
-            <button class="delete" onclick="deleteProduct(${index})">
-                Delete
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-function deleteProduct(index){
-
-    products.splice(index,1);
-
-    localStorage.setItem("products", JSON.stringify(products));
-
-    loadProducts();
-
-}
-
-loadProducts();
-
-</script>
 <script>
 
 if(localStorage.getItem("adminLogin")!=="true"){
@@ -181,5 +119,80 @@ window.location.href="admin-login.html";
 }
 
 </script>
+    <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  get,
+  remove
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  databaseURL: "https://shinoi-s-shop-default-rtdb.firebaseio.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+async function loadProducts() {
+
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "";
+
+  const snapshot = await get(ref(db, "products"));
+
+  if (!snapshot.exists()) {
+    productList.innerHTML = "<p>No Products Found</p>";
+    return;
+  }
+
+  snapshot.forEach((child) => {
+
+    const key = child.key;
+    const product = child.val();
+
+    productList.innerHTML += `
+      <div style="border:1px solid #ddd;padding:15px;margin-bottom:15px;border-radius:10px;background:#fff;">
+      
+        <img src="${product.image}"
+             style="width:120px;height:120px;object-fit:cover;border-radius:8px;"><br><br>
+
+        <b>${product.name}</b><br>
+        ৳${product.price}<br>
+        ${product.category}<br><br>
+
+        <button onclick="deleteProduct('${key}')"
+        style="background:red;color:#fff;padding:10px 15px;border:none;border-radius:6px;cursor:pointer;">
+        🗑 Delete
+        </button>
+
+      </div>
+    `;
+
+  });
+
+}
+
+window.deleteProduct = async function(key){
+
+  if(confirm("Delete this product?")){
+    await remove(ref(db,"products/"+key));
+    loadProducts();
+  }
+
+}
+
+loadProducts();
+
+    </script>
 </body>
 </html>
