@@ -69,6 +69,84 @@ border-radius:8px;
 </a>
 
 </div>
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  get
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  databaseURL: "https://shinoi-s-shop-default-rtdb.firebaseio.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const orderList = document.getElementById("orderList");
+
+const snapshot = await get(ref(db, "orders"));
+
+if (!snapshot.exists()) {
+
+  orderList.innerHTML = "<p>No Orders Found.</p>";
+
+} else {
+
+  orderList.innerHTML = "";
+
+  snapshot.forEach((child) => {
+
+    const key = child.key;
+    const order = child.val();
+console.log(order);
+    let products = "";
+
+    order.products.forEach(item => {
+
+      products += `
+      <p>
+      <b>${item.name}</b> × ${item.quantity}
+      - ৳${item.price}
+      </p>
+      `;
+
+    });
+
+    orderList.innerHTML += `
+
+    <div class="order">
+
+      <h3>Order ID: ${key}</h3>
+
+      <p><b>Date:</b> ${order.date}</p>
+      <p><b>Name:</b> ${order.customer.name}</p>
+      <p><b>Phone:</b> ${order.customer.phone}</p>
+      <p><b>Address:</b> ${order.customer.address}</p>
+      <p><b>Payment:</b> ${order.customer.payment}</p>
+      <p><b>Total:</b> ৳${order.customer.grandTotal}</p>
+      <p><b>Status:</b> ${order.status}</p>
+
+      <hr>
+
+      ${products}
+
+    </div>
+
+    `;
+
+  });
+
+}
+
+</script>
 </body>
 </html>
