@@ -344,11 +344,7 @@ cards.forEach(card=>{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  get
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
@@ -381,7 +377,7 @@ async function loadProducts() {
     const product = child.val();
 
     productBox.innerHTML += `
-      <div class="card" onclick='localStorage.setItem("selectedProduct", JSON.stringify(${JSON.stringify(product)})); window.location.href="product-details.html";'>
+      <div class="card">
         <img src="${product.image}">
         <h3>${product.name}</h3>
         <div class="price">৳${product.price}</div>
