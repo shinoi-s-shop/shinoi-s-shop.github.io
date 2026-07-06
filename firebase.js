@@ -98,10 +98,16 @@ window.login = async function () {
 
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
+const user = userCredential.user;
 
-    alert("Login Successful");
+localStorage.setItem("userUid", user.uid);
+localStorage.setItem("userEmail", user.email);
+localStorage.setItem("userName", user.displayName || "");
 
-    window.location.href = "index.html";
+alert("Login Successful");
+
+window.location.href = "index.html";
+
 
   } catch (error) {
 
@@ -175,11 +181,17 @@ const provider = new GoogleAuthProvider();
 
 window.googleLogin = async function () {
   try {
-    await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
 
-    alert("Google Login Successful!");
+const user = result.user;
 
-    window.location.href = "index.html";
+localStorage.setItem("userUid", user.uid);
+localStorage.setItem("userEmail", user.email);
+localStorage.setItem("userName", user.displayName || "");
+
+alert("Google Login Successful!");
+
+window.location.href = "index.html";
 
   } catch (error) {
     alert(error.message);
