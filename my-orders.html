@@ -111,115 +111,117 @@ color:#666;
 🏠 Back to Home
 </a>
 
-<script>
+<script type="module">
 
-let orders = JSON.parse(localStorage.getItem("orders")) || [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  get
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-let orderList = document.getElementById("orderList");
+const firebaseConfig = {
+  apiKey: "AIzaSyCwEqOjrZwN56MGRsMrA_BUjHWSnkvmecM",
+  authDomain: "shinoi-s-shop.firebaseapp.com",
+  databaseURL: "https://shinoi-s-shop-default-rtdb.firebaseio.com",
+  projectId: "shinoi-s-shop",
+  storageBucket: "shinoi-s-shop.firebasestorage.app",
+  messagingSenderId: "349772060842",
+  appId: "1:349772060842:web:1dbd365d526c0a28e2d8d3"
+};
 
-if(orders.length===0){
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-orderList.innerHTML=`
-<div class="empty">
-No Orders Found
-</div>
-`;
+window.viewInvoice = async function(orderId){
+
+  const snapshot = await get(ref(db,"orders/"+orderId));
+
+  if(snapshot.exists()){
+
+    localStorage.setItem(
+      "lastOrder",
+      JSON.stringify(snapshot.val())
+    );
+
+    window.location.href="invoice.html";
+  }
+
+};
+
+const currentUser = localStorage.getItem("userUid");
+const orderList = document.getElementById("orderList");
+
+const snapshot = await get(ref(db,"orders"));
+
+if(!snapshot.exists()){
+
+  orderList.innerHTML="<div class='empty'>No Orders Found</div>";
 
 }else{
 
-[...orders].reverse().forEach(order=>{
+  orderList.innerHTML="";
 
-let productsHTML="";
+  snapshot.forEach((child)=>{
 
-order.products.forEach(item=>{
+    const key=child.key;
+    const order=child.val();
 
-let qty=item.quantity || 1;
+    if(order.userUid!==currentUser) return;
 
-productsHTML+=`
-<div class="product">
+    let productsHTML="";
 
-<b>${item.name}</b><br>
+    order.products.forEach(item=>{
 
-Price: ৳${item.price}<br>
+      let qty=item.quantity||1;
 
-Quantity: ${qty}<br>
+      productsHTML+=`
+      <div class="product">
+      <b>${item.name}</b><br>
+      Price: ৳${item.price}<br>
+      Quantity: ${qty}
+      </div>
+      `;
 
-Total: ৳${item.price*qty}
+    });
 
-</div>
-`;
+    orderList.innerHTML+=`
+    <div class="order">
 
-});
+    <h3>Order ID: ${key}</h3>
 
-orderList.innerHTML+=`
+    <p><b>Date:</b> ${order.date}</p>
+    <p><b>Name:</b> ${order.customer.name}</p>
+    <p><b>Phone:</b> ${order.customer.phone}</p>
+    <p><b>Address:</b> ${order.customer.address}</p>
+    <p><b>Payment:</b> ${order.customer.payment}</p>
+    <p><b>Grand Total:</b> ৳${order.customer.grandTotal}</p>
 
-<div class="order">
+    <div class="status">${order.status}</div>
 
-<h3>Order ID: ${order.id}</h3>
+    <div class="products">
+    <h4>Products</h4>
+    ${productsHTML}
+    </div>
 
-<p><b>Date:</b> ${order.date}</p>
+    <button onclick="viewInvoice('${key}')"
+    style="margin-top:15px;padding:10px 20px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+    🧾 Invoice
+    </button>
 
-<p><b>Name:</b> ${order.customer.name}</p>
+    </div>
+    `;
 
-<p><b>Phone:</b> ${order.customer.phone}</p>
+  });
 
-<p><b>Address:</b> ${order.customer.address}</p>
-
-<p><b>Payment:</b> ${order.payment}</p>
-
-<p><b>Shipping:</b> ৳${order.shipping}</p>
-
-<p><b>Grand Total:</b> ৳${order.total}</p>
-
-<div class="status">
-${order.status}
-</div>
-
-<div class="products">
-
-<h4>Products</h4>
-
-${productsHTML}
-
-</div>
-
-<button
-onclick="viewInvoice('${order.id}')"
-style="
-margin-top:15px;
-padding:10px 20px;
-background:#28a745;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-size:16px;
-">
-🧾 Invoice
-</button>
-
-</div>
-
-`;
-
-});
+  if(orderList.innerHTML===""){
+    orderList.innerHTML="<div class='empty'>No Orders Found</div>";
+  }
 
 }
 
-function viewInvoice(orderId){
-
-let orders=JSON.parse(localStorage.getItem("orders")) || [];
-
-let order=orders.find(o=>o.id===orderId);
-
-if(order){
-
-localStorage.setItem("lastOrder",JSON.stringify(order));
-
-window.location.href="invoice.html";
-
-}
-
-}
-
+ 
 </script>
+
+</body>
+</html>
