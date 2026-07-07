@@ -69,13 +69,16 @@ border-radius:8px;
 </a>
 
 </div>
-<script type="module">
+  <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
 import {
   getDatabase,
   ref,
-  get
+  get,
+  update,
+  remove
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -91,28 +94,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+window.updateStatus = async function(id){
+
+  await update(ref(db,"orders/"+id),{
+    status:"Completed"
+  });
+
+  alert("Status Updated");
+  location.reload();
+
+};
+
+window.deleteOrder = async function(id){
+
+  if(confirm("Delete this order?")){
+
+    await remove(ref(db,"orders/"+id));
+
+    alert("Order Deleted");
+    location.reload();
+
+  }
+
+};
+
 const orderList = document.getElementById("orderList");
 
-const snapshot = await get(ref(db, "orders"));
+const snapshot = await get(ref(db,"orders"));
 
-if (!snapshot.exists()) {
+if(!snapshot.exists()){
 
-  orderList.innerHTML = "<p>No Orders Found.</p>";
+  orderList.innerHTML="<p>No Orders Found.</p>";
 
-} else {
+}else{
 
-  orderList.innerHTML = "";
+  orderList.innerHTML="";
 
-  snapshot.forEach((child) => {
+  snapshot.forEach(child=>{
 
-    const key = child.key;
-    const order = child.val();
-console.log(order);
-    let products = "";
+    const key=child.key;
+    const order=child.val();
 
-    order.products.forEach(item => {
+    let products="";
 
-      products += `
+    order.products.forEach(item=>{
+
+      products+=`
       <p>
       <b>${item.name}</b> × ${item.quantity}
       - ৳${item.price}
@@ -121,7 +148,7 @@ console.log(order);
 
     });
 
-    orderList.innerHTML += `
+    orderList.innerHTML+=`
 
     <div class="order">
 
@@ -139,6 +166,18 @@ console.log(order);
 
       ${products}
 
+      <br>
+
+      <button onclick="updateStatus('${key}')"
+      style="padding:8px 15px;background:green;color:white;border:none;border-radius:5px;cursor:pointer;">
+      ✅ Complete
+      </button>
+
+      <button onclick="deleteOrder('${key}')"
+      style="padding:8px 15px;background:red;color:white;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">
+      🗑 Delete
+      </button>
+
     </div>
 
     `;
@@ -147,6 +186,6 @@ console.log(order);
 
 }
 
-</script>
+  </script>
 </body>
 </html>
