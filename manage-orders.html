@@ -94,10 +94,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-window.updateStatus = async function(id){
+window.updateStatus = async function(id, status){
 
-  await update(ref(db,"orders/"+id),{
-    status:"Completed"
+  await update(ref(db, "orders/" + id), {
+    status: status
   });
 
   alert("Status Updated");
@@ -161,7 +161,35 @@ if(!snapshot.exists()){
       <p><b>Payment:</b> ${order.customer.payment}</p>
       <p><b>Total:</b> ৳${order.customer.grandTotal}</p>
       <p><b>Status:</b> ${order.status}</p>
+<select onchange="updateStatus('${key}', this.value)"
+style="margin-top:10px;padding:8px;width:180px;">
 
+<option value="Pending" ${order.status=="Pending"?"selected":""}>
+🟡 Pending
+</option>
+
+<option value="Processing" ${order.status=="Processing"?"selected":""}>
+🔵 Processing
+</option>
+
+<option value="Shipping" ${order.status=="Shipping"?"selected":""}>
+🚚 Shipping
+</option>
+
+<option value="Delivered" ${order.status=="Delivered"?"selected":""}>
+✅ Delivered
+</option>
+
+<option value="Cancelled" ${order.status=="Cancelled"?"selected":""}>
+❌ Cancelled
+</option>
+
+</select>
+
+<button onclick="deleteOrder('${key}')"
+style="padding:8px 15px;background:red;color:white;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">
+🗑 Delete
+</button>
       <hr>
 
       ${products}
