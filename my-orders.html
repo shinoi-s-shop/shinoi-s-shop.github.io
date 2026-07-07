@@ -133,24 +133,29 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-window.viewInvoice = async function(orderId){
+const currentUser = localStorage.getItem("userUid");
+const orderList = document.getElementById("orderList");
 
-  const snapshot = await get(ref(db,"orders/"+orderId));
+if (!currentUser) {
+  orderList.innerHTML = "<div class='empty'>Please Login First</div>";
+  throw new Error("User not logged in");
+}
 
-  if(snapshot.exists()){
+window.viewInvoice = async function(id){
+
+  const snap = await get(ref(db,"orders/"+id));
+
+  if(snap.exists()){
 
     localStorage.setItem(
       "lastOrder",
-      JSON.stringify(snapshot.val())
+      JSON.stringify(snap.val())
     );
 
     window.location.href="invoice.html";
   }
 
 };
-
-const currentUser = localStorage.getItem("userUid");
-const orderList = document.getElementById("orderList");
 
 const snapshot = await get(ref(db,"orders"));
 
@@ -162,54 +167,59 @@ if(!snapshot.exists()){
 
   orderList.innerHTML="";
 
-  snapshot.forEach((child)=>{
+  snapshot.forEach(child=>{
 
     const key=child.key;
     const order=child.val();
 
-    if(order.userUid!==currentUser) return;
+    if(order.userUid !== currentUser) return;
 
     let productsHTML="";
 
     order.products.forEach(item=>{
 
-      let qty=item.quantity||1;
-
-      productsHTML+=`
+      productsHTML += `
       <div class="product">
-      <b>${item.name}</b><br>
-      Price: ৳${item.price}<br>
-      Quantity: ${qty}
+        <b>${item.name}</b><br>
+        Price: ৳${item.price}<br>
+        Quantity: ${item.quantity}
       </div>
       `;
 
     });
 
-    orderList.innerHTML+=`
+    orderList.innerHTML += `
+
     <div class="order">
 
-    <h3>Order ID: ${key}</h3>
+      <h3>Order ID: ${key}</h3>
 
-    <p><b>Date:</b> ${order.date}</p>
-    <p><b>Name:</b> ${order.customer.name}</p>
-    <p><b>Phone:</b> ${order.customer.phone}</p>
-    <p><b>Address:</b> ${order.customer.address}</p>
-    <p><b>Payment:</b> ${order.customer.payment}</p>
-    <p><b>Grand Total:</b> ৳${order.customer.grandTotal}</p>
+      <p><b>Date:</b> ${order.date}</p>
 
-    <div class="status">${order.status}</div>
+      <p><b>Name:</b> ${order.customer.name}</p>
 
-    <div class="products">
-    <h4>Products</h4>
-    ${productsHTML}
+      <p><b>Phone:</b> ${order.customer.phone}</p>
+
+      <p><b>Address:</b> ${order.customer.address}</p>
+
+      <p><b>Payment:</b> ${order.customer.payment}</p>
+
+      <p><b>Total:</b> ৳${order.customer.grandTotal}</p>
+
+      <p><b>Status:</b> ${order.status}</p>
+
+      <div class="products">
+      <h4>Products</h4>
+      ${productsHTML}
+      </div>
+
+      <button onclick="viewInvoice('${key}')"
+      style="margin-top:15px;padding:10px 20px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+      🧾 Invoice
+      </button>
+
     </div>
 
-    <button onclick="viewInvoice('${key}')"
-    style="margin-top:15px;padding:10px 20px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-    🧾 Invoice
-    </button>
-
-    </div>
     `;
 
   });
@@ -218,8 +228,7 @@ if(!snapshot.exists()){
     orderList.innerHTML="<div class='empty'>No Orders Found</div>";
   }
 
-}
-
+        }
  
 </script>
 
