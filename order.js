@@ -27,13 +27,12 @@ window.placeOrder = async function () {
     alert("Cart is empty!");
     return;
   }
-
-  const order = {
+const order = {
   userUid: localStorage.getItem("userUid"),
   userEmail: localStorage.getItem("userEmail"),
   userName: localStorage.getItem("userName"),
 
-  customer,
+  customer: customer,
   products: cart,
   date: new Date().toLocaleString(),
   status: "Pending"
