@@ -27,26 +27,35 @@ window.placeOrder = async function () {
     alert("Cart is empty!");
     return;
   }
-const order = {
-  userUid: localStorage.getItem("userUid"),
-  userEmail: localStorage.getItem("userEmail"),
-  userName: localStorage.getItem("userName"),
 
-  customer: customer,
-  products: cart,
-  date: new Date().toLocaleString(),
-  status: "Pending"
-};
+  const order = {
+    userUid: localStorage.getItem("userUid"),
+    userEmail: localStorage.getItem("userEmail"),
+    userName: localStorage.getItem("userName"),
+
+    customer: customer,
+    products: cart,
+    date: new Date().toLocaleString(),
+    status: "Pending"
+  };
 
   try {
 
-    await push(ref(db, "orders"), order);
+    // Save order to Firebase
+    const newOrderRef = await push(ref(db, "orders"), order);
 
+    // Save order info for success page
+    localStorage.setItem("lastOrder", JSON.stringify({
+      id: newOrderRef.key,
+      total: customer.grandTotal,
+      ...order
+    }));
+
+    // Clear cart
     localStorage.removeItem("cart");
     localStorage.removeItem("customer");
 
-    alert("✅ Order Placed Successfully!");
-
+    // Go to success page
     window.location.href = "success.html";
 
   } catch (err) {
