@@ -120,14 +120,26 @@ let order = JSON.parse(localStorage.getItem("lastOrder"));
 
 if(order){
 
-document.getElementById("orderId").innerText = order.id;
+document.getElementById("orderId").innerText =
+order.id || "Not Found";
 
-document.getElementById("total").innerText = "৳" + order.total;
+let total = 0;
+
+if(order.total){
+    total = order.total;
+}else if(order.customer && order.customer.grandTotal){
+    total = order.customer.grandTotal;
+}else if(order.products){
+    order.products.forEach(item=>{
+        total += Number(item.price) * Number(item.quantity || 1);
+    });
+}
+
+document.getElementById("total").innerText = "৳" + total;
 
 }else{
 
 document.getElementById("orderId").innerText = "Not Found";
-
 document.getElementById("total").innerText = "৳0";
 
 }
