@@ -377,7 +377,9 @@ async function loadProducts() {
     const product = child.val();
 
     productBox.innerHTML += `
-      <div class="card">
+      <div class="card"
+     data-category="${product.category}"
+     data-description="${product.description}">
         <img src="${product.image}">
         <h3>${product.name}</h3>
         <div class="price">৳${product.price}</div>
