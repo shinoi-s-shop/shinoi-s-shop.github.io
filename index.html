@@ -406,8 +406,9 @@ productBox.addEventListener("click", function(e){
         image: card.querySelector("img").src,
         name: card.querySelector("h3").innerText,
         price: Number(card.querySelector(".price").innerText.replace("৳","")),
-        category: "General",
-        description: "High Quality Product."
+        category: card.dataset.category,
+description: card.dataset.description
+        
     };
 
     localStorage.setItem("selectedProduct", JSON.stringify(product));
