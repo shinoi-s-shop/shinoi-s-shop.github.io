@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Checkout</title>
 
 <style>
@@ -96,6 +99,37 @@ font-weight:bold;
 text-align:center;
 }
 
+/* Size Option */
+
+.size-title{
+font-size:18px;
+font-weight:bold;
+margin:15px 0 10px;
+}
+
+.sizeWrap{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:15px;
+}
+
+.sizeBtn{
+width:auto;
+padding:10px 18px;
+background:#fff;
+color:#ff9900;
+border:2px solid #ff9900;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.sizeBtn.active{
+background:#ff9900;
+color:#fff;
+}
+
 </style>
 
 </head>
@@ -129,6 +163,32 @@ text-align:center;
 </select>
 
 <div id="paymentBox"></div>
+
+<!-- Size Option -->
+
+<div class="size-title">Select Size (Optional)</div>
+
+<div class="sizeWrap">
+
+<button type="button" class="sizeBtn">S</button>
+
+<button type="button" class="sizeBtn">M</button>
+
+<button type="button" class="sizeBtn">L</button>
+
+<button type="button" class="sizeBtn">XL</button>
+
+<button type="button" class="sizeBtn">XXL</button>
+
+</div>
+
+<input
+type="text"
+id="customSize"
+placeholder="Or Write Your Size (Example: 38, 40, 3XL, Free Size)"
+>
+
+<input type="hidden" id="selectedSize">
 
 <div class="total-box">
 
@@ -191,15 +251,15 @@ let discount = 0;
 
 cart.forEach(item=>{
 
-let qty = item.quantity || 1;
+let qty=item.quantity||1;
 
-productTotal += Number(item.price) * qty;
+productTotal += Number(item.price)*qty;
 
 });
 
-document.getElementById("productTotal").innerText = productTotal;
+document.getElementById("productTotal").innerText=productTotal;
 
-document.getElementById("grandTotal").innerText = productTotal;
+document.getElementById("grandTotal").innerText=productTotal;
 
 function updateTotal(){
 
@@ -218,6 +278,7 @@ function updateTotal(){
 }
 
 // Shipping
+
 document.getElementById("district").addEventListener("change",function(){
 
     shipping = this.value==="dhaka" ? 60 :
@@ -229,46 +290,78 @@ document.getElementById("district").addEventListener("change",function(){
 
 });
 
+// Size Button
+
+const sizeBtns = document.querySelectorAll(".sizeBtn");
+
+sizeBtns.forEach(btn=>{
+
+    btn.onclick=function(){
+
+        sizeBtns.forEach(b=>b.classList.remove("active"));
+
+        this.classList.add("active");
+
+        document.getElementById("selectedSize").value =
+        this.innerText;
+
+        document.getElementById("customSize").value = "";
+
+    };
+
+});
+
+// Custom Size
+
+document.getElementById("customSize")
+.addEventListener("input",function(){
+
+    sizeBtns.forEach(b=>b.classList.remove("active"));
+
+    document.getElementById("selectedSize").value =
+    this.value.trim();
+
+});
+
 // Coupon
+
 function applyCoupon(){
 
-    let code = document.getElementById("couponCode")
-    .value
-    .trim()
-    .toUpperCase();
+    let code=document.getElementById("couponCode")
+    .value.trim().toUpperCase();
 
     if(code==="WELCOME10"){
 
-        discount = 10;
+        discount=10;
 
-        document.getElementById("couponMessage").innerHTML =
+        document.getElementById("couponMessage").innerHTML=
         "✅ WELCOME10 Applied (10% OFF)";
 
     }
 
     else if(code==="SAVE20"){
 
-        discount = 20;
+        discount=20;
 
-        document.getElementById("couponMessage").innerHTML =
+        document.getElementById("couponMessage").innerHTML=
         "✅ SAVE20 Applied (20% OFF)";
 
     }
 
     else if(code==="EID50"){
 
-        discount = 50;
+        discount=50;
 
-        document.getElementById("couponMessage").innerHTML =
+        document.getElementById("couponMessage").innerHTML=
         "✅ EID50 Applied (50% OFF)";
 
     }
 
     else{
 
-        discount = 0;
+        discount=0;
 
-        document.getElementById("couponMessage").innerHTML =
+        document.getElementById("couponMessage").innerHTML=
         "❌ Invalid Coupon";
 
     }
@@ -278,98 +371,118 @@ function applyCoupon(){
 }
 
 // Payment
-document.getElementById("payment").addEventListener("change",function(){
 
-    let box = document.getElementById("paymentBox");
+document.getElementById("payment")
+.addEventListener("change",function(){
 
-    if(this.value==="bKash" ||
-       this.value==="Nagad" ||
-       this.value==="Rocket"){
+    let box=document.getElementById("paymentBox");
 
-        box.innerHTML = `
+    if(
+        this.value==="bKash" ||
+        this.value==="Nagad" ||
+        this.value==="Rocket"
+    ){
 
-<input id="paymentNumber" type="text" placeholder="${this.value} Number">
+        box.innerHTML=`
 
-<input id="trxid" type="text" placeholder="Transaction ID">
+<input id="paymentNumber"
+type="text"
+placeholder="${this.value} Number">
+
+<input id="trxid"
+type="text"
+placeholder="Transaction ID">
 
 `;
 
     }else{
 
-        box.innerHTML = "";
+        box.innerHTML="";
 
     }
 
 });
 
 // Confirm Order
+
 function confirmOrder(){
 
-    let customer={
+let customer={
 
-        name:document.getElementById("name").value.trim(),
+name:document.getElementById("name").value.trim(),
 
-        phone:document.getElementById("phone").value.trim(),
+phone:document.getElementById("phone").value.trim(),
 
-        address:document.getElementById("address").value.trim(),
+address:document.getElementById("address").value.trim(),
 
-        district:document.getElementById("district").value,
+district:document.getElementById("district").value,
 
-        payment:document.getElementById("payment").value,
+payment:document.getElementById("payment").value,
 
-        paymentNumber:
+// যদি Size Button সিলেক্ট করা থাকে তাহলে সেটা,
+// না থাকলে Custom Size Input-এর লেখা নিবে
+size:
+document.getElementById("selectedSize").value ||
+document.getElementById("customSize").value.trim(),
+
+paymentNumber:
 document.getElementById("paymentNumber") ?
 document.getElementById("paymentNumber").value.trim() : "",
 
-        trxid:
+trxid:
 document.getElementById("trxid") ?
 document.getElementById("trxid").value.trim() : "",
 
-        shipping:shipping,
+shipping:shipping,
 
-        discount:discount,
+discount:discount,
 
-        grandTotal:Number(document.getElementById("grandTotal").innerText)
+grandTotal:Number(
+document.getElementById("grandTotal").innerText
+)
 
-    };
+};
 
-    if(
-        customer.name==="" ||
-        customer.phone==="" ||
-        customer.address==="" ||
-        customer.district==="" ||
-        customer.payment===""
-    ){
+if(
+customer.name==="" ||
+customer.phone==="" ||
+customer.address==="" ||
+customer.district==="" ||
+customer.payment===""
+){
 
-        alert("Please fill all fields!");
-        return;
+alert("Please fill all fields!");
 
-    }
+return;
 
-    if(customer.payment!=="Cash on Delivery"){
+}
 
-        if(
-            customer.paymentNumber==="" ||
-            customer.trxid===""
-        ){
+if(customer.payment!=="Cash on Delivery"){
 
-            alert("Enter Payment Number & Transaction ID");
-            return;
+if(
+customer.paymentNumber==="" ||
+customer.trxid===""
+){
 
-        }
+alert("Enter Payment Number & Transaction ID");
 
-    }
+return;
 
-    localStorage.setItem(
-        "customer",
-        JSON.stringify(customer)
-    );
+}
 
-    window.placeOrder();
+}
+
+localStorage.setItem(
+"customer",
+JSON.stringify(customer)
+);
+
+window.placeOrder();
 
 }
 
 </script>
+
 <script type="module" src="order.js"></script>
 
 </body>
