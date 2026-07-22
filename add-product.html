@@ -95,7 +95,7 @@ font-weight:bold;
 
 <input type="number" id="price" placeholder="Product Price">
 
-<input type="file" id="image" accept="image/*">
+<input type="file" id="image" accept="image/*" multiple>
 
 <select id="category">
 <option value="">Select Category</option>
@@ -155,11 +155,11 @@ const UPLOAD_PRESET = "shinoi-s-shop";
 
   const name = document.getElementById("name").value.trim();
   const price = document.getElementById("price").value.trim();
-  const file = document.getElementById("image").files[0];
+  const files = document.getElementById("image").files;
   const category = document.getElementById("category").value;
   const description = document.getElementById("description").value.trim();
 
-  if (!name || !price || !file || !category) {
+  if (!name || !price || files.length === 0 || !category) {
     alert("Please fill all required fields!");
     return;
   }
