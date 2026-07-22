@@ -45,6 +45,36 @@ gap:30px;
 width:100%;
 border-radius:10px;
 }
+    .gallery{
+width:100%;
+}
+
+.gallery img{
+width:100%;
+border-radius:10px;
+}
+
+.thumbnails{
+display:flex;
+gap:10px;
+margin-top:10px;
+flex-wrap:wrap;
+}
+
+.thumbnails img{
+width:70px;
+height:70px;
+object-fit:cover;
+border-radius:8px;
+cursor:pointer;
+border:2px solid transparent;
+transition:.3s;
+}
+
+.thumbnails img:hover{
+border-color:#ff9900;
+transform:scale(1.05);
+}
 
 .product-info h1{
 margin-bottom:10px;
@@ -159,7 +189,13 @@ grid-template-columns:1fr;
 
 <div class="product-image">
 
+<div class="gallery">
+
 <img id="productImage">
+
+<div class="thumbnails" id="thumbnails"></div>
+
+</div>
 
 </div>
 
@@ -252,7 +288,32 @@ if(!product){
     window.location.href = "index.html";
 }
 
-document.getElementById("productImage").src = product.image;
+const mainImage = document.getElementById("productImage");
+const thumbnails = document.getElementById("thumbnails");
+
+mainImage.src = product.image;
+
+if(product.images && product.images.length){
+
+    thumbnails.innerHTML = "";
+
+    product.images.forEach((img,index)=>{
+
+        const thumb = document.createElement("img");
+
+        thumb.src = img;
+
+        thumb.onclick = ()=>{
+
+            mainImage.src = img;
+
+        };
+
+        thumbnails.appendChild(thumb);
+
+    });
+
+    }
 document.getElementById("productName").innerText = product.name;
 document.getElementById("productPrice").innerText = "৳" + product.price;
 document.getElementById("productCategory").innerText = product.category || "General";
