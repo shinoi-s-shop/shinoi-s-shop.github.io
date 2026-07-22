@@ -167,25 +167,36 @@ const UPLOAD_PRESET = "shinoi-s-shop";
   try {
 
     // Upload image to Cloudinary
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
+    // Upload Multiple Images to Cloudinary
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData
-      }
-    );
+const imageUrls = [];
 
-    const data = await response.json();
+for (const file of files) {
 
-    if (!data.secure_url) {
-      alert("Image upload failed!");
-      return;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    {
+      method: "POST",
+      body: formData
     }
+  );
 
+  const data = await response.json();
+
+  if (data.secure_url) {
+    imageUrls.push(data.secure_url);
+  }
+
+}
+
+if (imageUrls.length === 0) {
+  alert("Image upload failed!");
+  return;
+  }
     const product = {
       id: Date.now(),
       name: name,
