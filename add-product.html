@@ -198,13 +198,14 @@ if (imageUrls.length === 0) {
   return;
   }
     const product = {
-      id: Date.now(),
-      name: name,
-      price: Number(price),
-      image: data.secure_url,
-      category: category,
-      description: description
-    };
+  id: Date.now(),
+  name: name,
+  price: Number(price),
+  image: imageUrls[0],      // প্রথম ছবিটি Cover Image
+  images: imageUrls,        // সব ছবির Array
+  category: category,
+  description: description
+};
 
     await push(ref(db, "products"), product);
 
