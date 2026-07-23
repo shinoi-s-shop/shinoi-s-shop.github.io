@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist - Shinoi's Shop</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff4d6d,#ff758f,#ffb3c1);
+    overflow:hidden;
+}
+
+/* Animated Background */
+body::before,
+body::after{
+    content:"";
+    position:absolute;
+    width:350px;
+    height:350px;
+    border-radius:50%;
+    filter:blur(70px);
+    animation:float 8s ease-in-out infinite;
+}
+
+body::before{
+    background:rgba(255,255,255,0.35);
+    top:-100px;
+    left:-100px;
+}
+
+body::after{
+    background:rgba(255,255,255,0.2);
+    bottom:-100px;
+    right:-100px;
+    animation-delay:2s;
+}
+
+@keyframes float{
+    50%{
+        transform:translateY(-40px) scale(1.1);
+    }
+}
+
+/* Glass Card */
+.card{
+    width:380px;
+    padding:40px 30px;
+    text-align:center;
+    border-radius:25px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.3);
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    color:#fff;
+}
+
+.heart{
+    font-size:80px;
+    animation:beat 1s infinite;
+}
+
+@keyframes beat{
+    50%{
+        transform:scale(1.15);
+    }
+}
+
+h1{
+    margin-top:20px;
+    font-size:30px;
+}
+
+p{
+    margin-top:15px;
+    line-height:1.7;
+    font-size:16px;
+    color:#f8f8f8;
+}
+
+/* Loading Dots */
+.loading{
+    margin-top:20px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.loading span{
+    animation:blink 1.5s infinite;
+}
+
+.loading span:nth-child(2){
+    animation-delay:.2s;
+}
+
+.loading span:nth-child(3){
+    animation-delay:.4s;
+}
+
+@keyframes blink{
+    0%,80%,100%{
+        opacity:0;
+    }
+    40%{
+        opacity:1;
+    }
+}
+
+/* Button */
+.btn{
+    display:inline-block;
+    margin-top:30px;
+    padding:14px 35px;
+    border-radius:50px;
+    text-decoration:none;
+    color:#ff4d6d;
+    background:#fff;
+    font-weight:bold;
+    transition:.3s;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+
+.btn:hover{
+    background:#ff4d6d;
+    color:#fff;
+    transform:translateY(-4px);
+}
+
+.shop{
+    margin-top:25px;
+    font-size:22px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<div class="heart">💖</div>
+
+<h1>Wishlist Coming Soon!</h1>
+
+<p>
+Our Wishlist feature is currently under development.<br>
+It will be available very soon.
+</p>
+
+<div class="loading">
+Loading<span>.</span><span>.</span><span>.</span>
+</div>
+
+<a href="index.html" class="btn">🏠 Back to Home</a>
+
+<div class="shop">
+🛍️ Shinoi's Shop
+</div>
+
+</div>
+
+</body>
+</html>
